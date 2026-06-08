@@ -76,3 +76,4 @@ C:\Users\Hsu Sandar Swe\source\repos\CurrencySPA\CurrencyConverter\obj\Debug\net
 C:\Users\Hsu Sandar Swe\source\repos\CurrencySPA\CurrencyConverter\obj\Debug\net9.0\CurrencyConverter.pdb
 C:\Users\Hsu Sandar Swe\source\repos\CurrencySPA\CurrencyConverter\obj\Debug\net9.0\CurrencyConverter.genruntimeconfig.cache
 C:\Users\Hsu Sandar Swe\source\repos\CurrencySPA\CurrencyConverter\obj\Debug\net9.0\ref\CurrencyConverter.dll
+C:\Users\Hsu Sandar Swe\source\repos\CurrencySPA\CurrencyConverter\obj\Debug\net9.0\CurrencyConverter.sourcelink.json
