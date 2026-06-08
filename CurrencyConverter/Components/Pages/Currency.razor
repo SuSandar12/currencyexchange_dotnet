@@ -1,0 +1,114 @@
+﻿@page "/currency"
+@rendermode InteractiveServer
+@inject HttpClient Http
+
+<PageTitle>Currency Converter</PageTitle>
+
+<h3>💱 Currency Converter</h3>
+
+<div class="row g-3 mt-2">
+
+    <div class="col-md-3">
+        <label class="form-label">Amount</label>
+        <input class="form-control"
+               type="number"
+               @bind="Amount" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">From Currency</label>
+        <input class="form-control"
+               @bind="FromCurrency" />
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label">To Currency</label>
+        <input class="form-control"
+               @bind="ToCurrency" />
+    </div>
+
+    <div class="col-md-3 d-flex align-items-end">
+        <button class="btn btn-primary"
+                @onclick="Convert"
+                disabled="@IsLoading">
+            Convert
+        </button>
+    </div>
+
+</div>
+
+@if (IsLoading)
+{
+    <div class="mt-3">
+        Loading...
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Result))
+{
+    <div class="alert alert-success mt-3">
+        @Result
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <div class="alert alert-danger mt-3">
+        @ErrorMessage
+    </div>
+}
+
+@code {
+
+    decimal Amount = 1;
+
+    string FromCurrency = "SGD";
+
+    string ToCurrency = "USD";
+
+    string Result = "";
+
+    string ErrorMessage = "";
+
+    bool IsLoading;
+
+    private async Task Convert()
+    {
+        try
+        {
+            IsLoading = true;
+            ErrorMessage = "";
+            Result = "";
+
+            var url =
+                $"https://api.frankfurter.app/latest?amount={Amount}&from={FromCurrency.ToUpper()}&to={ToCurrency.ToUpper()}";
+
+            var response =
+                await Http.GetFromJsonAsync<ExchangeResponse>(url);
+
+            if (response is not null &&
+                response.Rates.TryGetValue(ToCurrency.ToUpper(), out var convertedAmount))
+            {
+                Result =
+                    $"{Amount} {FromCurrency.ToUpper()} = {convertedAmount:N2} {ToCurrency.ToUpper()}";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    public class ExchangeResponse
+    {
+        public decimal Amount { get; set; }
+
+        public string Base { get; set; } = "";
+
+        public Dictionary<string, decimal> Rates { get; set; } = new();
+    }
+}
