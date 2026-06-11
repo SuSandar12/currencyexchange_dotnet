@@ -1,54 +1,34 @@
-﻿name: .NET CI Pipeline
+﻿name: Blazor CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      # 1. Get code
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup .NET
-      - name: Setup .NET SDK
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # 3. Cache NuGet packages (SPEED BOOST ⚡)
-      - name: Cache NuGet
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      # 4. Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # 5. Build solution (Release mode)
-      - name: Build solution
+      - name: Build project
         run: dotnet build --configuration Release --no-restore
 
-      # 6. Run tests (if you add later)
-      - name: Run tests
-        run: dotnet test --configuration Release --no-build
-        continue-on-error: true
-
-      # 7. Publish app (CI artifact output)
-      - name: Publish application
+      - name: Publish app
         run: dotnet publish -c Release -o publish
 
-      # 8. Upload artifact
-      - name: Upload build artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: blazor-app
